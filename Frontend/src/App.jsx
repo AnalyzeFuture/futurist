@@ -1,12 +1,12 @@
 import "./App.css";
-import NavBar from "./components/nav";
-
+import HomePg from "./components/homepage";
+import NavBar from "./components/navbar";
 function App() {
   return (
-    <>
+    <div>
       <NavBar />
-      <div>hello</div>
-    </>
+      <HomePg />
+    </div>
   );
 }
 
