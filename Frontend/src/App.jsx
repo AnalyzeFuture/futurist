@@ -3,7 +3,7 @@ import HomePg from "./components/homepage";
 import NavBar from "./components/navbar";
 function App() {
   return (
-    <div>
+    <div className="main-body w-screen h-screen bg-white">
       <NavBar />
       <HomePg />
     </div>

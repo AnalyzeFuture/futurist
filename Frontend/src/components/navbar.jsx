@@ -27,7 +27,6 @@ function NavBar() {
       <nav className="bg-white md:px-5 lg:px-10 pt-3 pb-5 flex flex-col items-center md:flex-row justify-between">
         <div className="pt-2 flex items-center">
           {/* <img src={logo} className="w-14 h-14 ml-2 mr-7" alt="logo" /> */}
-          <div>logo here</div>
           <ScrollLink
             to="start1"
             spy={true}
@@ -57,39 +56,39 @@ function NavBar() {
           } flex-col md:flex-row justify-center items-center space-y-1 sm:space-y-0  md:flex `}
         >
           <ScrollLink
-            to="contact1"
+            to="upload"
             spy={true}
             smooth={true}
             offset={-90}
             duration={500}
-            onClick={() => handleLinkClick("contact1")}
-            className={`sm:text-sm md:text-base xl:text-lg font-extralight hover:font-semibold lg:w-full lg:h-full  md:w-20 md:h-full hover:text-black lg:mx-14 md:mx-10 ${
-              activeLink === "contact1" ? "underline font-semibold" : ""
-            }`}
-          >
-            Upload Resume
-          </ScrollLink>
-          <ScrollLink
-            to="event1"
-            spy={true}
-            smooth={true}
-            offset={-90}
-            duration={500}
-            onClick={() => handleLinkClick("event1")}
+            onClick={() => handleLinkClick("upload")}
             className={`sm:text-sm md:text-base xl:text-lg font-extralight hover:font-semibold hover:text-black mr-0 lg:mx-14 md:mx-10  ${
               activeLink === "event1" ? "underline font-semibold" : ""
             }`}
           >
-            Event
+            Upload
           </ScrollLink>
-
           <ScrollLink
-            to="contact1"
+            to="about"
             spy={true}
             smooth={true}
             offset={-90}
             duration={500}
-            onClick={() => handleLinkClick("contact1")}
+            onClick={() => handleLinkClick("about")}
+            className={`sm:text-sm md:text-base xl:text-lg font-extralight hover:font-semibold hover:text-black mr-0 lg:mx-14 md:mx-10  ${
+              activeLink === "event1" ? "underline font-semibold" : ""
+            }`}
+          >
+            About
+          </ScrollLink>
+
+          <ScrollLink
+            to="contact"
+            spy={true}
+            smooth={true}
+            offset={-90}
+            duration={500}
+            onClick={() => handleLinkClick("contact")}
             className={`sm:text-sm md:text-base xl:text-lg font-extralight hover:font-semibold lg:w-full lg:h-full  md:w-20 md:h-full hover:text-black lg:mx-14 md:mx-10 ${
               activeLink === "contact1" ? "underline font-semibold" : ""
             }`}
@@ -98,7 +97,7 @@ function NavBar() {
           </ScrollLink>
         </div>
       </nav>
-      <div className="p-1 sm:p-1 bg-gradient-to-r from-indigo-200 from-10%  via-sky-200 via-40% to-fuchsia-100 to-90%"></div>
+      <div className="p-1 sm:p-0.5 bg-gradient-to-r from-neutral-800 from-10%  via-neutral-600  via-50% to-netural-400 to-100%"></div>
     </div>
   );
 }
