@@ -4,3 +4,19 @@
 
 @import "tailwindcss/utilities";
 
+
+::-webkit-scrollbar{
+    width: 7px;
+  }
+  
+  ::-webkit-scrollbar-track{
+    background: hsl(0, 0%, 96%);
+  }
+  
+  ::-webkit-scrollbar-thumb{
+    background: #16181a;
+    border-radius: 5px ;
+  }
+  ::-webkit-scrollbar-thumb:hover{
+    background:#0e0e0f;
+  }

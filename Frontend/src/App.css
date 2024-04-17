@@ -1,0 +1,10 @@
+body {
+    overflow-x: hidden;
+  }
+  
+  /* App.css */
+  .disable-scroll {
+    overflow: hidden;
+  }
+  
+  
