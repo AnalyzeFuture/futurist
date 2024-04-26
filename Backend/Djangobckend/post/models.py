@@ -10,4 +10,7 @@ class Post(models.Model):
     def __str__(self):
         return f"Post:{self.url}"
 
-
+class Gemini(models.Model):
+    url = models.TextField()
+    def __str__(self):
+        return f"Gemini:{self.url}"

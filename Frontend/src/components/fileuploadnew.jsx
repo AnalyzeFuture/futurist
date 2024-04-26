@@ -71,11 +71,24 @@ const UploadFile = () => {
         },
         body: JSON.stringify(payload),
       });
-  
+      
       if (!finalDataToBackend.ok) {
         throw new Error("Failed to send image URL to backend");
       }
-  
+      
+
+      const RunBackendOnPost = await fetch(`http://127.0.0.1:8000/gemini-analysis/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      
+      if (!RunBackendOnPost.ok) {
+        throw new Error("Failed to send image URL to backend");
+      }
+      
       setImagePreview(null);
       setUploadSuccess(true);
     } catch (error) {
@@ -84,6 +97,9 @@ const UploadFile = () => {
     } finally {
       setIsLoading(false);
     }
+
+
+    
   };
   
   
