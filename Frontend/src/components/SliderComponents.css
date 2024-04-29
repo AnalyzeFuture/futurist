@@ -1,0 +1,24 @@
+
+.slider {
+    height: fit-content;
+    overflow: hidden;
+  }
+  .logos {
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: slide 25s linear infinite;
+  }
+  .logos img {
+    width: 50px;
+    margin: 0 25px;
+  }
+  @keyframes slide {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }

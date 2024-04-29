@@ -4,7 +4,7 @@ from ..models import Gemini
 class PostSerializer(ModelSerializer):
     class Meta:
         model = Post
-        fields = ('id','url')
+        fields = ('id','cgpa','projects','workshops_certifications','skill_count','extracurricular_activities')
 
 class GeminiSerializer(ModelSerializer):
     class GenAi:

@@ -5,4 +5,5 @@ from .views import PostViewSet
 post_router = DefaultRouter()
 post_router.register(r'post',PostViewSet)
 
+get_router = DefaultRouter()
 

@@ -1,16 +1,17 @@
 from django.db import models
 
-# Create your models here.
-
-
 class Post(models.Model):
-    # title = models.CharField(max_length=200, default="TITLE")
-    # body = models.TextField()
-    url = models.TextField()
+    cgpa = models.FloatField(default=0.00) 
+    projects = models.IntegerField(default=0)
+    workshops_certifications = models.IntegerField(default=0)
+    skill_count = models.IntegerField(default=0)
+    extracurricular_activities = models.IntegerField(default=0)
+
     def __str__(self):
-        return f"Post:{self.url}"
+        return f"Post: {self.cgpa}"
 
 class Gemini(models.Model):
-    url = models.TextField()
+    url = models.URLField()
+
     def __str__(self):
-        return f"Gemini:{self.url}"
+        return f"Gemini: {self.url}"

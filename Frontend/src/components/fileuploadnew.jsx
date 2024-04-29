@@ -1,21 +1,84 @@
-import { useState, useEffect } from "react";
-import uploadpng from "../assets/upload.png";
+import { useState } from "react";
+import uploadpng from "../assets/upload2.png";
+import defaultImage from "../assets/template.png";
+import { useNavigate } from "react-router-dom";
+import "./homepage.css";
+import axios from "axios";
 
 const UploadFile = () => {
+  const navigate = useNavigate();
   const [profileImage, setProfileImage] = useState("");
+  const [responseData, setResponseData] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [formData, setFormData] = useState({
+    CGPA: 0,
+    Projects: 0,
+    WorkshopsCertifications: 0,
+    skill_count: 0,
+    ExtracurricularActivities: 0,
+  });
+  const [isEditing, setIsEditing] = useState(false);
 
-  useEffect(() => {
-    let timer;
-    if (uploadSuccess) {
-      timer = setTimeout(() => {
-        setUploadSuccess(false);
-      }, 2000);
+  const handleStartAnalysis = () => {
+    setIsEditing(true);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(formData);
+    const formDataInt = {
+      ...formData,
+      CGPA: parseInt(formData.CGPA),
+      Projects: parseInt(formData.Projects),
+      WorkshopsCertifications: parseInt(formData.WorkshopsCertifications),
+      skill_count: parseInt(formData.skill_count),
+      ExtracurricularActivities: parseInt(formData.ExtracurricularActivities),
+    };
+
+    // Check if any of the conversion failed
+  if (
+    Object.values(formDataInt).some((value) => isNaN(value))
+  ) {
+    console.error("One or more fields contain invalid numbers");
+    return;
+  }
+
+    try {
+      // Send updated data to backend
+
+      const response = await axios.post(`http://127.0.0.1:8000/predict_cv/`,
+      formDataInt,
+      {
+        headers:{
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+      console.log(response.data);
+      if (response.status == 200) {
+        console.log("Updated successfully !!");
+        setResponseData(response.data);
+        console.log(response.data);
+        navigate("/checkit",{ state: { responseData } });
+        
+      }
+      else{
+        throw new Error("Failed to update data");
+      }
+      console.log("Data updated successfully!");
+    } catch (error) {
+      console.error("Error updating data:", error.message);
     }
-    return () => clearTimeout(timer);
-  }, [uploadSuccess]);
+  };
 
   const handleImageChange = (e) => {
     setProfileImage(e.target.files[0]);
@@ -35,19 +98,19 @@ const UploadFile = () => {
 
   const uploadImage = async (e) => {
     e.preventDefault();
-  
+
     if (!profileImage) {
       alert("Please select an image");
       return;
     }
-  
+
     setIsLoading(true);
     try {
       const formData = new FormData();
       formData.append("file", profileImage);
       formData.append("cloud_name", "dhedlkgfi");
       formData.append("upload_preset", "fdbjitkg");
-  
+
       const response = await fetch(
         `https://api.cloudinary.com/v1_1/dhedlkgfi/image/upload`,
         {
@@ -55,106 +118,269 @@ const UploadFile = () => {
           body: formData,
         }
       );
-  
+
       if (!response.ok) {
         throw new Error("Failed to upload image to Cloudinary");
       }
-  
+
       const imgData = await response.json();
       const imageURL = imgData.secure_url;
       const payload = { url: imageURL };
 
-      const finalDataToBackend = await fetch(`http://127.0.0.1:8000/api/post/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      
-      if (!finalDataToBackend.ok) {
-        throw new Error("Failed to send image URL to backend");
-      }
-      
+      const RunBackendOnPost = await axios.post(
+        `http://127.0.0.1:8000/extract_info/`,
+        payload,
+        {
+          headers:{
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
-      const RunBackendOnPost = await fetch(`http://127.0.0.1:8000/gemini-analysis/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const responseData = RunBackendOnPost.data;
+      const dataType = typeof responseData;
+      console.log(dataType);
+      console.log('Response data:', responseData);
+      const jsonData = JSON.stringify(responseData);
+      console.log(jsonData);
       
-      if (!RunBackendOnPost.ok) {
+      //Assign value 
+      setFormData({
+        
+        CGPA: responseData.CGPA || 0,
+        Projects: responseData.Projects || 0,
+        WorkshopsCertifications: responseData.WorkshopsCertifications || 0,
+        skill_count: responseData.skill_count || 0,
+        ExtracurricularActivities: responseData.ExtracurricularActivities || 0,
+      });
+      setUploadSuccess(true);
+      setImagePreview(null);
+      if (!RunBackendOnPost) {
         throw new Error("Failed to send image URL to backend");
       }
-      
-      setImagePreview(null);
-      setUploadSuccess(true);
     } catch (error) {
       console.error(error);
-      alert("An error occurred while uploading the image");
+      // alert("An error occurred while uploading the image");
     } finally {
       setIsLoading(false);
     }
-
-
-    
   };
-  
-  
+
+  const resetStates = () => {
+    setProfileImage("");
+    setUploadSuccess(false);
+    setImagePreview(null);
+    setIsEditing(false);
+    // Do not reset uploadSuccess here
+  };
 
   return (
-    <div className="flex relative flex-row justify-center items-center gap-20">
-      <div className="flex relative mt-40  flex-col justify-center items-center gap-5">
-        <form
-          onSubmit={uploadImage}
-          className="flex flex-col items-center my-7"
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-        >
-          <label htmlFor="file" className="cursor-pointer">
-            <div className="flex flex-col bg-e6e3e3 justify-center items-center p-14 rounded-3xl border-dotted border-2  border-gray-600 shadow-lg">
+    <div className="flex relative pt-16 mx-20 flex-row justify-center items-center gap-20">
+      {isEditing ? null : uploadSuccess ? (
+        <div className="flex relative flex-col justify-center items-center gap-5">
+          <div className=" text-green-500 font-thin text-5xl">
+            <p className="pb-7">Uploaded successfully !!</p>
+          </div>
+          <div className="button-borders">
+            <button
+              className="primary-button"
+              type="button"
+              onClick={handleStartAnalysis}
+            >
+              START ANALYSIS
+            </button>
+          </div>
+          <button
+            onClick={resetStates}
+            className="pt-10 text-xs font-mono cursor-pointer duration-200 hover:scale-125 active:scale-100"
+            title="Go Back"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="50px"
+              height="50px"
+              viewBox="0 0 24 24"
+              className="stroke-blue-300"
+            >
+              <path
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                strokeWidth="1.5"
+                d="M11 6L5 12M5 12L11 18M5 12H19"
+              ></path>
+            </svg>
+            BACK
+          </button>
+        </div>
+      ) : (
+        <>
+          <div className="flex relative flex-col justify-center items-center gap-5">
+            <form
+              onSubmit={uploadImage}
+              className="flex flex-col items-center "
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+            >
+              <label htmlFor="file" className="cursor-pointer">
+                <div className="flex flex-col bg-e6e3e3 justify-center items-center p-14 rounded-3xl border-dotted border-2  border-gray-600 shadow-lg">
+                  <img
+                    src={uploadpng}
+                    alt="png-upload"
+                    className="w-10 h-10"
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop}
+                  />
+                  <p className="text-center">Drag and Drop</p>
+                  <p className="text-center">or</p>
+                  <p className="text-center">Browse File</p>
+                </div>
+                <input
+                  id="file"
+                  accept="image/*"
+                  type="file"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </label>
+              <p className="pt-7">
+                {isLoading ? (
+                  <div className="loader mt-32"></div>
+                ) : (
+                  <div className="button-borders">
+                    <button className="primary-button" type="submit">
+                      UPLOAD
+                    </button>
+                  </div>
+                )}
+              </p>
+            </form>
+          </div>
+          <div className="flex border-emerald-300 border relative  justify-center items-center">
+            {profileImage && !isEditing ? (
               <img
-                src={uploadpng}
-                alt="png-upload"
-                className="w-10 h-10"
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
+                className="w-80"
+                src={imagePreview ? imagePreview : defaultImage}
+                alt="image-cv"
               />
-              <p className="text-center">Drag and Drop</p>
-              <p className="text-center">or</p>
-              <p className="text-center">Browse File</p>
-            </div>
-            <input
-              id="file"
-              accept="image/*"
-              type="file"
-              onChange={handleImageChange}
-              className="hidden"
-            />
-          </label>
-          <p className="pt-10">
-            {isLoading ? (
-              "Uploading..."
-            ) : (
-              <button className="border text-white duration-300 relative group cursor-pointer overflow-hidden h-16 w-48 rounded-md bg-gray-800 p-2 font-extrabold hover:bg-gray-900">
-                <div className="absolute group-hover:-top-1 group-hover:-right-2 z-10 w-16 h-16 rounded-full group-hover:scale-150 duration-700 right-12 top-12 bg-yellow-500"></div>
-                <div className="absolute group-hover:-top-1 group-hover:-right-2 z-10 w-12 h-12 rounded-full group-hover:scale-150 duration-700 right-20 -top-6 bg-orange-500"></div>
-                <div className="absolute group-hover:-top-1 group-hover:-right-2 z-10 w-8 h-8 rounded-full group-hover:scale-150 duration-700 right-32 top-6 bg-pink-500"></div>
-                <div className="absolute group-hover:-top-1 group-hover:-right-2 z-10 w-4 h-4 rounded-full group-hover:scale-150 duration-700 right-2 top-12 bg-red-600"></div>
-                <p className="z-10 absolute bottom-2 left-2">Upload</p>
-              </button>
+            ) : !isEditing && (
+              <img className="w-80" src={defaultImage} alt="default-image" />
             )}
-          </p>
-        </form>
-        {uploadSuccess && <p>Uploaded successfully!</p>}
-      </div>
-      <div className="flex relative mt-20 w-full justify-center items-center">
-        {imagePreview && (
-          <img className="w-8/12 " src={imagePreview} alt="image-cv" />
-        )}
-      </div>
+          </div>
+        </>
+      )}
+
+      {isEditing && (
+        <div className="flex relative flex-col justify-center items-center gap-5">
+          <div className="flex flex-col gap-2 font-mono justify-center text-center items-center text-4xl  ">
+            <p> EDITING <span className="text-green-400"> WIN</span>DOW </p>
+            <div className="w-1/2 h-0.1 bg-teal-400">
+              </div>
+            </div>
+
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col items-center justify-center font-mono space-y-7"
+          >
+            
+            <div>
+              <label
+                className="block text-gray-800 font-semibold text-sm"
+              >
+                CGPA / SGPA 
+              </label>
+              <div className="mt-2">
+                <input
+                  type="number"
+                  name="CGPA"
+                  className="block w-56 rounded-md py-1.5 px-2 ring-1 ring-inset ring-gray-400 focus:text-orange-500"
+                  value={formData.CGPA}
+                onChange={handleInputChange}
+                />
+              </div>
+            </div>
+            <div>
+              <label
+                className="block text-gray-800 font-semibold text-sm"
+              >
+                PROJECTS
+              </label>
+              <div className="mt-2">
+                <input
+                  type="number"
+                  name="Projects"
+                  className="block w-56 rounded-md py-1.5 px-2 ring-1 ring-inset ring-gray-400 focus:text-orange-500"
+                  value={formData.Projects}
+                onChange={handleInputChange}
+                />
+              </div>
+            </div>
+            <div>
+              <label
+                className="block text-gray-800 font-semibold text-sm"
+              >
+                WORKSHOPS/CERTIFICATIONS
+              </label>
+              <div className="mt-2">
+                <input
+                  type="number"
+                  name="WorkshopsCertifications"
+                  className="block w-56 rounded-md py-1.5 px-2 ring-1 ring-inset ring-gray-400 focus:text-orange-500"
+                  value={formData.WorkshopsCertifications}
+                onChange={handleInputChange}
+                />
+              </div>
+            </div>
+        
+             <div>
+              <label
+                className="block text-gray-800 font-semibold text-sm"
+              >
+                EXTRACURRICULAR ACTIVITES
+              </label>
+              <div className="mt-2">
+                <input
+                  type="number"
+                  name="ExtracurricularActivities"
+                  className="block w-56 rounded-md py-1.5 px-2 ring-1 ring-inset ring-gray-400 focus:text-orange-500"
+                  value={formData.ExtracurricularActivities}
+                onChange={handleInputChange}
+                />
+              </div>
+            </div>       
+            <div className="button-borders">
+            <button
+              className="primary-button"
+              type="submit"
+              onClick={handleStartAnalysis}
+            >
+              FINAL SUBMIT
+            </button>
+          </div>
+          
+          </form>
+          <button
+            onClick={resetStates}
+            className="pt-10 text-xs font-mono cursor-pointer duration-200 hover:scale-125 active:scale-100"
+            title="Go Back"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="50px"
+              height="50px"
+              viewBox="0 0 24 24"
+              className="stroke-blue-300"
+            >
+              <path
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                strokeWidth="1.5"
+                d="M11 6L5 12M5 12L11 18M5 12H19"
+              ></path>
+            </svg>
+            RESTART
+          </button>
+        </div>
+      )}
     </div>
   );
 };

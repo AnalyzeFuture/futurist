@@ -6,7 +6,7 @@
 
 
 ::-webkit-scrollbar{
-    width: 7px;
+    width: 5px;
   }
   
   ::-webkit-scrollbar-track{
@@ -19,4 +19,8 @@
   }
   ::-webkit-scrollbar-thumb:hover{
     background:#0e0e0f;
+  }
+
+  .body{
+    overflow-x: hidden;
   }

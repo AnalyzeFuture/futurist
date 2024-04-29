@@ -1,0 +1,6 @@
+Django==5.0.4
+djangorestframework==3.15.1
+openai==1.23.6
+Pillow==10.3.0
+protobuf==5.26.1
+Requests==2.31.0

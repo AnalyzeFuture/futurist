@@ -17,9 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from post.api.views import PostViewSet
-
+from post.resumeExtraction.extractdata import json_data_from_resume
+from post.Predict.predict import predict
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('Djangobckend.api.urls')),
     path('gemini-analysis/', include('Djangobckend.api.urls')),
+    path('extract_info/' , json_data_from_resume  ),
+    path('predict_cv/',predict),
 ]
