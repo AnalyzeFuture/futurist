@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "./homepage.css";
 import axios from "axios";
 
+// eslint-disable-next-line react/prop-types, no-unused-vars
 const UploadFile = ({ setFormDatafinal, placed, setPlaced }) => {
   const navigate = useNavigate();
   const [profileImage, setProfileImage] = useState("");
@@ -46,28 +47,30 @@ const UploadFile = ({ setFormDatafinal, placed, setPlaced }) => {
 
     // Check if any of the conversion failed
     if (Object.values(formDataInt).some((value) => isNaN(value))) {
-      console.error("One or more fields contain invalid numbers");
-      return;
-    }
+    console.error("One or more fields contain invalid numbers");
+    return;
+  }
 
     try {
       // Send updated data to backend
 
       const response = await axios.post(
         `http://127.0.0.1:8000/predict_cv/`,
-        formDataInt,
-        {
+      formDataInt,
+      {
           headers: {
             "Content-Type": "application/json",
-          },
-        }
-      );
+        },
+      }
+    );
       console.log(response.data);
       if (response.status == 200) {
         console.log("Updated successfully !!");
         setResponseData(response.data);
         console.log(response.data);
+        // eslint-disable-next-line no-unused-vars
         const temp_form_data = await setFormDatafinal(formData);
+        // eslint-disable-next-line no-unused-vars
         const temp_data = await setPlaced(response.data);
         navigate("/checkit", { state: { responseData } });
       } else {
@@ -142,8 +145,8 @@ const UploadFile = ({ setFormDatafinal, placed, setPlaced }) => {
       console.log("Response data:", responseData);
       const jsonData = JSON.stringify(responseData);
       console.log(jsonData);
-
-      //Assign value
+      
+      //Assign value 
       setFormData({
         CGPA: responseData.CGPA || 0,
         Projects: responseData.Projects || 0,
@@ -262,7 +265,7 @@ const UploadFile = ({ setFormDatafinal, placed, setPlaced }) => {
               />
             ) : (
               !isEditing && (
-                <img className="w-80" src={defaultImage} alt="default-image" />
+              <img className="w-80" src={defaultImage} alt="default-image" />
               )
             )}
           </div>
@@ -277,7 +280,7 @@ const UploadFile = ({ setFormDatafinal, placed, setPlaced }) => {
               EDITING <span className="text-green-400"> WIN</span>DOW{" "}
             </p>
             <div className="w-1/2 h-0.1 bg-teal-400"></div>
-          </div>
+            </div>
 
           <form
             onSubmit={handleSubmit}
@@ -285,7 +288,7 @@ const UploadFile = ({ setFormDatafinal, placed, setPlaced }) => {
           >
             <div>
               <label className="block text-gray-800 font-semibold text-sm">
-                CGPA / SGPA
+                CGPA / SGPA 
               </label>
               <div className="mt-2">
                 <input
@@ -293,7 +296,7 @@ const UploadFile = ({ setFormDatafinal, placed, setPlaced }) => {
                   name="CGPA"
                   className="block w-56 rounded-md py-1.5 px-2 ring-1 ring-inset ring-gray-400 focus:text-orange-500"
                   value={formData.CGPA}
-                  onChange={handleInputChange}
+                onChange={handleInputChange}
                 />
               </div>
             </div>
@@ -307,7 +310,7 @@ const UploadFile = ({ setFormDatafinal, placed, setPlaced }) => {
                   name="Projects"
                   className="block w-56 rounded-md py-1.5 px-2 ring-1 ring-inset ring-gray-400 focus:text-orange-500"
                   value={formData.Projects}
-                  onChange={handleInputChange}
+                onChange={handleInputChange}
                 />
               </div>
             </div>
@@ -321,12 +324,12 @@ const UploadFile = ({ setFormDatafinal, placed, setPlaced }) => {
                   name="WorkshopsCertifications"
                   className="block w-56 rounded-md py-1.5 px-2 ring-1 ring-inset ring-gray-400 focus:text-orange-500"
                   value={formData.WorkshopsCertifications}
-                  onChange={handleInputChange}
+                onChange={handleInputChange}
                 />
               </div>
             </div>
-
-            <div>
+        
+             <div>
               <label className="block text-gray-800 font-semibold text-sm">
                 EXTRACURRICULAR ACTIVITES
               </label>
@@ -336,19 +339,19 @@ const UploadFile = ({ setFormDatafinal, placed, setPlaced }) => {
                   name="ExtracurricularActivities"
                   className="block w-56 rounded-md py-1.5 px-2 ring-1 ring-inset ring-gray-400 focus:text-orange-500"
                   value={formData.ExtracurricularActivities}
-                  onChange={handleInputChange}
+                onChange={handleInputChange}
                 />
               </div>
-            </div>
+            </div>       
             <div className="button-borders">
-              <button
-                className="primary-button"
-                type="submit"
-                onClick={handleStartAnalysis}
-              >
-                FINAL SUBMIT
-              </button>
-            </div>
+            <button
+              className="primary-button"
+              type="submit"
+              onClick={handleStartAnalysis}
+            >
+              FINAL SUBMIT
+            </button>
+          </div>
           </form>
           <button
             onClick={resetStates}
