@@ -1,7 +1,18 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import PropTypes from "prop-types";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./checkit.css";
+
 
 const CheckIt = ({ setProgress, location, placed, formDatafinal }) => {
+  const navigate = useNavigate();
+  const handlegotoStart = () => {
+    navigate("/");
+  };
+
   useEffect(() => {
     setProgress(45);
     setTimeout(() => {
@@ -27,47 +38,73 @@ const CheckIt = ({ setProgress, location, placed, formDatafinal }) => {
     <>
       <div className="relative flex flex-col justify-center items-center mt-40 w-full mx-10 text-5xl h-screen">
         {placed == 1 ? (
-          <h1 className="text-6xl font-inter text-green-400">
-            You're Ready for Placement !!
-          </h1>
+          <div className="flex relative flex-col justify-center items-center gap-5">
+          <div className=" text-green-500 font-thin text-5xl pt-16">
+            <p className="pb-7">You're ready for place !!</p>
+          </div>
+          
+            <button
+              className="primary-button"
+              type="button"
+              onClick={handlegotoStart}
+            >
+              OKAY GOT IT
+            </button>
+          </div>
+            // You need Improvement !!
+
         ) : (
-          <h1 className="text-6xl font-inter text-red-400">
-            You need Improvement !!
-          </h1>
+          <div className="flex relative flex-col justify-center items-center mt-10 gap-5">
+          <div className=" text-rose-500 font-thin text-5xl pt-16">
+            <p className="pb-7">You're ready for place !!</p>
+          </div>
+         
+            <button
+              className="primary-button"
+              type="button"
+              onClick={handlegotoStart}
+            >
+              OKAY GOT IT
+            </button>
+          </div>
+        
         )}
 
         {formDatafinal && placed == 0 && (
-          <div className="mt-5 space-y-2 text-3xl font-inter ">
+          <div className="flex flex-col justify-center items-center text-center mt-10 gap-5 text-xl font-sans ">
             {formDatafinal.CGPA <= parameters_to_improve.CGPA && (
-              <p>CGPA: {parameters_to_improve.CGPA - formDatafinal.CGPA}</p>
+              <div>CGPA: <span className="text-rose-600">{parameters_to_improve.CGPA - formDatafinal.CGPA}</span></div>
             )}
             {formDatafinal.Projects < parameters_to_improve.Projects && (
-              <p>Projects: {formDatafinal.Projects}</p>
+              <div>Projects:<span className="text-rose-600"> {formDatafinal.Projects}</span></div>
             )}
             {formDatafinal.WorkshopsCertifications <
               parameters_to_improve.WorkshopsCertifications && (
-              <p>
-                Workshops/Certifications:{" "}
+              <div>
+                Workshops/Certifications:<span className="text-rose-600">{" "}
                 {parameters_to_improve.WorkshopsCertifications -
-                  formDatafinal.WorkshopsCertifications}
-              </p>
+                  formDatafinal.WorkshopsCertifications}</span>
+              </div>
             )}
             {formDatafinal.skill_count < parameters_to_improve.skill_count && (
-              <p>
-                Need To Improve More Technical Skills
+              <div>
+               You Need To Improve <span className="text-rose-600 ">Technical Skills</span>
                 {/* {parameters_to_improve.skill_count - formDatafinal.skill_count} */}
-              </p>
+              </div>
             )}
             {formDatafinal.ExtracurricularActivities <
               parameters_to_improve.ExtracurricularActivities && (
-              <p>
-                Extracurricular Activities:{" "}
+              <div>
+                Add Extracurricular Activities:<span className="text-rose-600">{" "}
                 {parameters_to_improve.ExtracurricularActivities -
                   formDatafinal.ExtracurricularActivities}
-              </p>
+                  </span>
+              </div>
             )}
+            
           </div>
         )}
+        
         <div className=" relative flex flex-col w-full  h-full mt-2">
           <div className=" relative flex flex-row gap-2 py-5  items-center justify-center ">
             <img
