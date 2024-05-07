@@ -6,6 +6,7 @@ import ReactTextTransition, { presets } from "react-text-transition";
 import { FaRegCopyright } from "react-icons/fa";
 import SliderComponent from "./SliderLogo";
 
+// eslint-disable-next-line react/prop-types
 const HomePg = ({ setProgress, setFormDatafinal, placed, setPlaced }) => {
   const [textIndex, setTextIndex] = useState(0);
   const texts = ["CV ", "Resume "];
@@ -17,14 +18,14 @@ const HomePg = ({ setProgress, setFormDatafinal, placed, setPlaced }) => {
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [texts.length]);
 
   useEffect(() => {
     setProgress(45);
     setTimeout(() => {
       setProgress(100);
     }, 1500);
-  }, []);
+  }, [setProgress]);
 
   return (
     <div className="relative">

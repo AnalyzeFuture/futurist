@@ -2,16 +2,6 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import ReactTextTransition, { presets } from "react-text-transition";
 import abt1 from "../assets/aboutimg1.jpg";
-import abt2 from "../assets/aboutimg2.jpg";
-import abt3 from "../assets/aboutimg3.jpg";
-import abt4 from "../assets/aboutimg4.jpg";
-import bgimg from "../assets/aboutimg5.jpg";
-// import abt5 from "https://res.cloudinary.com/dhedlkgfi/image/upload/v1714378447/Screenshot_2024-04-29_134105_tcdj7f.png";
-// import abt6 from "https://res.cloudinary.com/dhedlkgfi/image/upload/v1714378447/Screenshot_2024-04-29_134126_wzzs12.png";
-// import abt7 from "https://res.cloudinary.com/dhedlkgfi/image/upload/v1714378448/Screenshot_2024-04-29_133947_yxlxnm.png";
-// import abt8 from "https://res.cloudinary.com/dhedlkgfi/image/upload/v1714378447/Screenshot_2024-04-29_134149_dq2e65.png";
-// import abt9 from "https://res.cloudinary.com/dhedlkgfi/image/upload/v1714378447/Screenshot_2024-04-29_134115_y9x0xv.png";
-// import abt10 from "https://res.cloudinary.com/dhedlkgfi/image/upload/v1714378447/Screenshot_2024-04-29_134138_zthx4c.png";
 
 const About = ({ setProgress }) => {
   const [textIndex, setTextIndex] = useState(0);
@@ -21,7 +11,7 @@ const About = ({ setProgress }) => {
     setTimeout(() => {
       setProgress(100);
     }, 1500);
-  }, []);
+  }, [setProgress]);
   const texts = ["CV", "Resume"];
 
   const paragraphs = [
@@ -37,7 +27,7 @@ const About = ({ setProgress }) => {
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [paragraphs.length, texts.length]);
 
   return (
     <>
