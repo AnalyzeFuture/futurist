@@ -38,7 +38,7 @@ const CheckIt = ({ setProgress, location, placed, formDatafinal }) => {
     <>
       <div className="relative flex flex-col justify-center items-center mt-40 w-full mx-10 text-5xl h-screen">
         {placed == 1 ? (
-          <div className="flex relative flex-col justify-center items-center gap-5">
+          <div className="flex relative flex-col justify-center items-center mt-10 gap-5">
           <div className=" text-green-500 font-thin text-5xl pt-16">
             <p className="pb-7">You're ready for place !!</p>
           </div>
@@ -51,21 +51,15 @@ const CheckIt = ({ setProgress, location, placed, formDatafinal }) => {
               OKAY GOT IT
             </button>
           </div>
-            // You need Improvement !!
+            // 
 
         ) : (
           <div className="flex relative flex-col justify-center items-center mt-10 gap-5">
           <div className=" text-rose-500 font-thin text-5xl pt-16">
-            <p className="pb-7">You're ready for place !!</p>
+            <p className="pb-7">You need Improvement !!</p>
           </div>
          
-            <button
-              className="primary-button"
-              type="button"
-              onClick={handlegotoStart}
-            >
-              OKAY GOT IT
-            </button>
+           
           </div>
         
         )}
@@ -73,15 +67,15 @@ const CheckIt = ({ setProgress, location, placed, formDatafinal }) => {
         {formDatafinal && placed == 0 && (
           <div className="flex flex-col justify-center items-center text-center mt-10 gap-5 text-xl font-sans ">
             {formDatafinal.CGPA <= parameters_to_improve.CGPA && (
-              <div>CGPA: <span className="text-rose-600">{parameters_to_improve.CGPA - formDatafinal.CGPA}</span></div>
+              <div>Improve CGPA : <span className="text-rose-600">{(parameters_to_improve.CGPA - formDatafinal.CGPA).toFixed(2)}</span></div>
             )}
             {formDatafinal.Projects < parameters_to_improve.Projects && (
-              <div>Projects:<span className="text-rose-600"> {formDatafinal.Projects}</span></div>
+              <div>Add Projects:<span className="text-rose-600"> {formDatafinal.Projects}</span></div>
             )}
             {formDatafinal.WorkshopsCertifications <
               parameters_to_improve.WorkshopsCertifications && (
               <div>
-                Workshops/Certifications:<span className="text-rose-600">{" "}
+               Add Workshops/Certifications:<span className="text-rose-600">{" "}
                 {parameters_to_improve.WorkshopsCertifications -
                   formDatafinal.WorkshopsCertifications}</span>
               </div>
@@ -100,8 +94,20 @@ const CheckIt = ({ setProgress, location, placed, formDatafinal }) => {
                   formDatafinal.ExtracurricularActivities}
                   </span>
               </div>
+              
             )}
-            
+          <div className="pt-3">
+
+            <div className=" button-borders">
+             <button
+              className="primary-button"
+              type="button"
+              onClick={handlegotoStart}
+            >
+              OKAY GOT IT
+            </button>
+          </div>
+        </div>
           </div>
         )}
         
