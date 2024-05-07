@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "./homepage.css";
 import axios from "axios";
 
-const UploadFile = () => {
+const UploadFile = ({ setFormDatafinal, placed, setPlaced }) => {
   const navigate = useNavigate();
   const [profileImage, setProfileImage] = useState("");
   const [responseData, setResponseData] = useState(null);
@@ -45,33 +45,32 @@ const UploadFile = () => {
     };
 
     // Check if any of the conversion failed
-  if (
-    Object.values(formDataInt).some((value) => isNaN(value))
-  ) {
-    console.error("One or more fields contain invalid numbers");
-    return;
-  }
+    if (Object.values(formDataInt).some((value) => isNaN(value))) {
+      console.error("One or more fields contain invalid numbers");
+      return;
+    }
 
     try {
       // Send updated data to backend
 
-      const response = await axios.post(`http://127.0.0.1:8000/predict_cv/`,
-      formDataInt,
-      {
-        headers:{
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+      const response = await axios.post(
+        `http://127.0.0.1:8000/predict_cv/`,
+        formDataInt,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       console.log(response.data);
       if (response.status == 200) {
         console.log("Updated successfully !!");
         setResponseData(response.data);
         console.log(response.data);
-        navigate("/checkit",{ state: { responseData } });
-        
-      }
-      else{
+        const temp_form_data = await setFormDatafinal(formData);
+        const temp_data = await setPlaced(response.data);
+        navigate("/checkit", { state: { responseData } });
+      } else {
         throw new Error("Failed to update data");
       }
       console.log("Data updated successfully!");
@@ -131,8 +130,8 @@ const UploadFile = () => {
         `http://127.0.0.1:8000/extract_info/`,
         payload,
         {
-          headers:{
-            'Content-Type': 'application/json',
+          headers: {
+            "Content-Type": "application/json",
           },
         }
       );
@@ -140,13 +139,12 @@ const UploadFile = () => {
       const responseData = RunBackendOnPost.data;
       const dataType = typeof responseData;
       console.log(dataType);
-      console.log('Response data:', responseData);
+      console.log("Response data:", responseData);
       const jsonData = JSON.stringify(responseData);
       console.log(jsonData);
-      
-      //Assign value 
+
+      //Assign value
       setFormData({
-        
         CGPA: responseData.CGPA || 0,
         Projects: responseData.Projects || 0,
         WorkshopsCertifications: responseData.WorkshopsCertifications || 0,
@@ -262,8 +260,10 @@ const UploadFile = () => {
                 src={imagePreview ? imagePreview : defaultImage}
                 alt="image-cv"
               />
-            ) : !isEditing && (
-              <img className="w-80" src={defaultImage} alt="default-image" />
+            ) : (
+              !isEditing && (
+                <img className="w-80" src={defaultImage} alt="default-image" />
+              )
             )}
           </div>
         </>
@@ -272,21 +272,20 @@ const UploadFile = () => {
       {isEditing && (
         <div className="flex relative flex-col justify-center items-center gap-5">
           <div className="flex flex-col gap-2 font-mono justify-center text-center items-center text-4xl  ">
-            <p> EDITING <span className="text-green-400"> WIN</span>DOW </p>
-            <div className="w-1/2 h-0.1 bg-teal-400">
-              </div>
-            </div>
+            <p>
+              {" "}
+              EDITING <span className="text-green-400"> WIN</span>DOW{" "}
+            </p>
+            <div className="w-1/2 h-0.1 bg-teal-400"></div>
+          </div>
 
           <form
             onSubmit={handleSubmit}
             className="flex flex-col items-center justify-center font-mono space-y-7"
           >
-            
             <div>
-              <label
-                className="block text-gray-800 font-semibold text-sm"
-              >
-                CGPA / SGPA 
+              <label className="block text-gray-800 font-semibold text-sm">
+                CGPA / SGPA
               </label>
               <div className="mt-2">
                 <input
@@ -294,14 +293,12 @@ const UploadFile = () => {
                   name="CGPA"
                   className="block w-56 rounded-md py-1.5 px-2 ring-1 ring-inset ring-gray-400 focus:text-orange-500"
                   value={formData.CGPA}
-                onChange={handleInputChange}
+                  onChange={handleInputChange}
                 />
               </div>
             </div>
             <div>
-              <label
-                className="block text-gray-800 font-semibold text-sm"
-              >
+              <label className="block text-gray-800 font-semibold text-sm">
                 PROJECTS
               </label>
               <div className="mt-2">
@@ -310,14 +307,12 @@ const UploadFile = () => {
                   name="Projects"
                   className="block w-56 rounded-md py-1.5 px-2 ring-1 ring-inset ring-gray-400 focus:text-orange-500"
                   value={formData.Projects}
-                onChange={handleInputChange}
+                  onChange={handleInputChange}
                 />
               </div>
             </div>
             <div>
-              <label
-                className="block text-gray-800 font-semibold text-sm"
-              >
+              <label className="block text-gray-800 font-semibold text-sm">
                 WORKSHOPS/CERTIFICATIONS
               </label>
               <div className="mt-2">
@@ -326,15 +321,13 @@ const UploadFile = () => {
                   name="WorkshopsCertifications"
                   className="block w-56 rounded-md py-1.5 px-2 ring-1 ring-inset ring-gray-400 focus:text-orange-500"
                   value={formData.WorkshopsCertifications}
-                onChange={handleInputChange}
+                  onChange={handleInputChange}
                 />
               </div>
             </div>
-        
-             <div>
-              <label
-                className="block text-gray-800 font-semibold text-sm"
-              >
+
+            <div>
+              <label className="block text-gray-800 font-semibold text-sm">
                 EXTRACURRICULAR ACTIVITES
               </label>
               <div className="mt-2">
@@ -343,20 +336,19 @@ const UploadFile = () => {
                   name="ExtracurricularActivities"
                   className="block w-56 rounded-md py-1.5 px-2 ring-1 ring-inset ring-gray-400 focus:text-orange-500"
                   value={formData.ExtracurricularActivities}
-                onChange={handleInputChange}
+                  onChange={handleInputChange}
                 />
               </div>
-            </div>       
+            </div>
             <div className="button-borders">
-            <button
-              className="primary-button"
-              type="submit"
-              onClick={handleStartAnalysis}
-            >
-              FINAL SUBMIT
-            </button>
-          </div>
-          
+              <button
+                className="primary-button"
+                type="submit"
+                onClick={handleStartAnalysis}
+              >
+                FINAL SUBMIT
+              </button>
+            </div>
           </form>
           <button
             onClick={resetStates}

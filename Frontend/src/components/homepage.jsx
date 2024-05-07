@@ -6,10 +6,10 @@ import ReactTextTransition, { presets } from "react-text-transition";
 import { FaRegCopyright } from "react-icons/fa";
 import SliderComponent from "./SliderLogo";
 
-const HomePg = ({ setProgress }) => {
+const HomePg = ({ setProgress, setFormDatafinal, placed, setPlaced }) => {
   const [textIndex, setTextIndex] = useState(0);
   const texts = ["CV ", "Resume "];
-  
+
   useEffect(() => {
     let interval = setInterval(() => {
       setTextIndex((prevIndex) => (prevIndex + 1) % texts.length);
@@ -25,7 +25,7 @@ const HomePg = ({ setProgress }) => {
       setProgress(100);
     }, 1500);
   }, []);
-  
+
   return (
     <div className="relative">
       <div className="hidden md:block fixed bg-orange-600 z-20 w-4 h-20 xl:w-7 xl:h-36 top-1/2 left-0 ">
@@ -33,7 +33,7 @@ const HomePg = ({ setProgress }) => {
           <span>
             <FaRegCopyright className="w-2 h-2 xl:w-4 xl:h-4" />
           </span>
-          <span className="">2024</span> 
+          <span className="">2024</span>
         </div>
       </div>
       <div className="flex flex-col justify-center items-center relative mt-7 px-10 w-full h-fit  overflow-hidden ">
@@ -54,10 +54,15 @@ const HomePg = ({ setProgress }) => {
         <div className="relative mt-7 w-1/2 h-0.1 bg-rose-500"></div>
 
         <div className="flex relative flex-col w-full">
-          <UploadFile />
+          <UploadFile
+            // formData={formData}
+            setFormDatafinal={setFormDatafinal}
+            placed={placed}
+            setPlaced={setPlaced}
+          />
         </div>
         <div className="flex relative justify-center my-10">
-          <SliderComponent/>
+          <SliderComponent />
         </div>
       </div>
     </div>
